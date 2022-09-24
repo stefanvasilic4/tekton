@@ -1,0 +1,22 @@
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  generateName: build-image-
+  namespace: platform-team-pipelines
+spec:
+  pipelineRef:
+    name: image-builder
+  serviceAccountName: pipeline
+  params:
+  - name: imageVersion
+    value: '5eb941d27d27d4b31ea6eda358c3e870d9cbe47e'
+  - name: sourceGitUrl
+    value: 'https://github.com/stefanvasilic4/tekton.git'
+  - name: sourceDockerfilePath
+    value: 'oc-mirror'
+  - name: targetImage
+    value: ''svasilica/newimage:first
+  workspaces:
+  - name: dockerfile-source
+    emptyDir: {}
+---
