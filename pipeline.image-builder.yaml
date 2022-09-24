@@ -1,0 +1,33 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: image-builder
+  namespace: platform-team-pipelines
+spec:
+  params:
+  - name: imageVersion
+    description: The version tag of the image (i.e. <SHA hash>, v0.2)
+  - name: sourceGitUrl
+    description: The git repository where the to-be-built-image Dockerfile lives
+  - name: sourceDockerfilePath
+    description: The path in the repository structure in which the Dockerfile can be found
+  - name: targetImage
+    description: The target container repository location and image name (i.e. docker-registry-publish.garmin.com/<path/to/image_name>
+  workspaces:
+  - name: dockerfile-source
+
+  tasks:
+  - name: build-image
+    taskRef:
+      name: build-image
+    params:
+    - name: imageVersion
+      value: $(params.imageVersion)
+    - name: sourceGitUrl
+      value: $(params.sourceGitUrl)
+    - name: sourceDockerfilePath
+      value: $(params.sourceDockerfilePath)
+    - name: targetImage
+      value: $(params.targetImage)
+    workspaces:
+    - name: dockerfile-source
